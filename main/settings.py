@@ -26,8 +26,8 @@ sysargv=str(sys.argv[0])+"==="+str(sys.argv[1])
 remote=0
 DEBUG = True
 if sys.argv[1]=="main.wsgi":
-   	remote=1
-	DEBUG = True # swap to false when confident remote app works
+    remote=1
+    DEBUG = True # swap to false when confident remote app works
 SECRET_KEY = os.getenv('SECRET_KEY')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -36,7 +36,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = True
 
-ALLOWED_HOSTS = ['basic2-e75m.onrender.com','localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['basic2.onrender.com','localhost', '127.0.0.1']
 
 
 # Application definition
