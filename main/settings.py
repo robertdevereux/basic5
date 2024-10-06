@@ -21,13 +21,13 @@ import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# my amendments to SECRET_KEY and DEBUG, and to track whether or not local/remote and server name
-sysargv=str(sys.argv[0])+"==="+str(sys.argv[1])
-remote=0
+# Get the value of the environment variable 'IS_REMOTE' and store it in is_remote_flag
+is_remote_flag = os.getenv('IS_REMOTE', 'false') == 'true'
+
+# Set DEBUG to True, both locally and remotely
+# idc swap to 'DEBUG = not is_remote_flag' to enable DEBUG locally, but disable DEBUG remotely
 DEBUG = True
-if sys.argv[1]=="main.wsgi":
-    remote=1
-    DEBUG = True # swap to false when confident remote app works
+
 SECRET_KEY = os.getenv('SECRET_KEY')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -80,21 +80,28 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'main.wsgi.application'
 
-# my replacement of SQLITE3 database: one default if local; another if remote
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'robert',
-        'USER': 'robert',
-        'PASSWORD': 'downingstreet',
-        'HOST': 'localhost',
-        'PORT': '',
+# my replacement for Database settings based on whether we're running remotely or locally
+if is_remote_flag:
+    # Remote database (via DATABASE_URL)
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.getenv('DATABASE_URL'),
+            conn_max_age=600,
+            ssl_require=True
+        )
     }
-}
-
-if remote: # set by earlier amendment
-    import dj_database_url
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+else:
+    # Local database settings
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'robert',
+            'USER': 'robert',
+            'PASSWORD': 'downingstreet',
+            'HOST': 'localhost',
+            'PORT': '',
+        }
+    }
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 #
