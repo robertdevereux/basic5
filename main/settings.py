@@ -16,6 +16,10 @@ from pathlib import Path
 import sys
 import os
 import dj_database_url
+import logging
+
+# Set up basic logging
+logging.basicConfig(level=logging.DEBUG)
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,6 +31,10 @@ is_remote_flag = os.getenv('IS_REMOTE', 'false') == 'true'
 # Set DEBUG to True, both locally and remotely
 # idc swap to 'DEBUG = not is_remote_flag' to enable DEBUG locally, but disable DEBUG remotely
 DEBUG = True
+
+# Log the values of the environment variables for debugging
+logging.debug(f"IS_REMOTE: {is_remote_flag}")
+logging.debug(f"DATABASE_URL: {os.getenv('DATABASE_URL')}")
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 # Quick-start development settings - unsuitable for production
@@ -80,9 +88,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'main.wsgi.application'
 
-# my replacement for Database settings based on whether we're running remotely or locally
+# My amendments to database settings based on whether we're running remotely or locally
 if is_remote_flag:
     # Remote database (via DATABASE_URL)
+    logging.debug("Running in remote environment, using DATABASE_URL.")
     DATABASES = {
         'default': dj_database_url.config(
             default=os.getenv('DATABASE_URL'),
@@ -92,6 +101,7 @@ if is_remote_flag:
     }
 else:
     # Local database settings
+    logging.debug("Running in local environment, using local database settings.")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -102,6 +112,7 @@ else:
             'PORT': '',
         }
     }
+
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 #
