@@ -15,8 +15,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('', include('app1.urls')),  # this sends http://127.0.0.1:8000 to app1 (and that sends '' to app1_home
+    path('admin/', admin.site.urls), # this sends http://127.0.0.1:8000/admin off to admin site
+    path('tester/', include('tester.urls')),  # this sends http://127.0.0.1:8000/tester off to tester (and that sends '' to tester_home
 ]
